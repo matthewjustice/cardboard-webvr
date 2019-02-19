@@ -39,7 +39,7 @@ This will generate a WebVR application in your output folder.
 
 To view the WebVR content you generated, locally serve the content of the output folder with a web server. I recommend [live-server](https://www.npmjs.com/package/live-server). Open a web browser and view the locally-served site.
 
-Once you are satisfied with the content, you can host it on the public web if you wish to share it with other. It is static content so any static host will work, such as [surge.sh](https://surge.sh/) or [Netlify](https://www.netlify.com/).
+Once you are satisfied with the content, you can host it on the public web if you wish to share it with others. It is static content so any static host will work, such as [surge.sh](https://surge.sh/) or [Netlify](https://www.netlify.com/).
 
 ## Built With
 - [.NET Core](https://docs.microsoft.com/en-us/dotnet/core/)
@@ -51,7 +51,7 @@ Once you are satisfied with the content, you can host it on the public web if yo
 
 - **Matthew Justice** [matthewjustice](https://github.com/matthewjustice)
 
-See also the list of [contributors](https://github.com/matthewjustice/pumpkinpi/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/matthewjustice/cardboard-webvr/contributors) who participated in this project.
 
 ## License
 

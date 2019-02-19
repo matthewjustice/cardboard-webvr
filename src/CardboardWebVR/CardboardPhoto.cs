@@ -43,10 +43,25 @@ namespace CardboardWebVR
         public CardboardPhoto(string filePath)
         {
             this.SourceFilePath = filePath;
+
+            // Get the right eye photo data from the file's metadata
             this.base64RightPhoto = GetXmpData("GImage:Data", this.SourceFilePath);
             if (string.IsNullOrWhiteSpace(this.base64RightPhoto))
             {
                 throw new Exception("Specified image file does not contain cardboard metadata");
+            }
+
+            // Try to get the caption from metadata, or failing that, use the file name
+            this.Caption = GetXmpData("dc:title[1]", this.SourceFilePath);
+
+            if (string.IsNullOrWhiteSpace(this.Caption))
+            {
+                this.Caption = GetXmpData("dc:description[1]", this.SourceFilePath);
+            }
+
+            if (string.IsNullOrWhiteSpace(this.Caption))
+            {
+                this.Caption = Path.GetFileNameWithoutExtension(this.SourceFilePath);
             }
         }
 
@@ -227,12 +242,12 @@ namespace CardboardWebVR
         }
 
         /// <summary>
-        /// Gets the XMP data for a certain tag from a file
+        /// Gets the XMP data for a certain property from a file
         /// </summary>
-        /// <param name="tagName">Name of the tag.</param>
+        /// <param name="property">The name of the XML property</param>
         /// <param name="filePath">The file path.</param>
-        /// <returns>A string value for the XMP tag name</returns>
-        private static string GetXmpData(string tagName, string filePath)
+        /// <returns>A string value for the first matching XMP property</returns>
+        private static string GetXmpData(string property, string filePath)
         {
             var data = string.Empty;
             var metadataDirectories = ImageMetadataReader.ReadMetadata(filePath);
@@ -242,7 +257,7 @@ namespace CardboardWebVR
             {
                 var xmpDirectory = (XmpDirectory)directory;
                 var xmpDictionary = xmpDirectory.GetXmpProperties();
-                if (xmpDictionary.TryGetValue(tagName, out data))
+                if (xmpDictionary.TryGetValue(property, out data))
                 {
                     break;
                 }

@@ -1,0 +1,14 @@
+{
+    "extends": "google",
+    "parserOptions": {
+        "ecmaVersion":6
+    },
+    "rules": {
+        "linebreak-style": 0,
+        "indent": ["error", 4],
+        "max-len":"off",
+        "require-jsdoc":"off",
+        "comma-dangle":["error", "never"],
+        "no-invalid-this":"off"
+    }
+}

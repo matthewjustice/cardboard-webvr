@@ -1,0 +1,15 @@
+{
+  "name": "cardboard-webvr",
+  "version": "1.0.0",
+  "description": "template files for generating a WebVR presentation from Cardboard Camera photos",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Matthew Justice",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^5.14.1",
+    "eslint-config-google": "^0.12.0"
+  }
+}

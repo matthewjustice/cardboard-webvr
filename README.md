@@ -6,8 +6,13 @@ Generate a WebVR slideshow from a set of Cardboard Camera photos
 
 ### Prerequisites
 
-- Some photos taken with [Google Cardboard Camera](https://play.google.com/store/apps/details?id=com.google.vr.cyclops&hl=en_US)
+- Photos taken with [Google Cardboard Camera](https://play.google.com/store/apps/details?id=com.google.vr.cyclops&hl=en_US)
 - [.NET Core 2.1](https://dotnet.microsoft.com/download/dotnet-core/2.1) installed
+- On Linux, make sure you have libgdiplus. Ubuntu install:
+
+```sh
+$ sudo apt-get install libgdiplus
+```
 
 ### Prepare Your Photos
 - Copy your Cardboard photos to an empty folder.
@@ -24,7 +29,7 @@ $ git clone https://github.com/matthewjustice/cardboard-webvr.git
 Change directories
 
 ```
-$ cd src/CardboardWebVR
+$ cd cardboard-webvr/src/CardboardWebVR/
 ```
 
 Run the application, specifying the full input folder path and output folder path.

@@ -56,7 +56,7 @@ namespace CardboardWebVR
         /// <value>
         /// The file path.
         /// </value>
-        [JsonIgnoreAttribute]
+        [JsonIgnore]
         public string SourceFilePath { get; set; }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace CardboardWebVR
         /// <value>
         /// The left image path.
         /// </value>
-        [JsonIgnoreAttribute]
+        [JsonIgnore]
         public string LeftImagePath { get; set; }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace CardboardWebVR
         /// <value>
         /// The right image path.
         /// </value>
-        [JsonIgnoreAttribute]
+        [JsonIgnore]
         public string RightImagePath { get; set; }
 
         /// <summary>

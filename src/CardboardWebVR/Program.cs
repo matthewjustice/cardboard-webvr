@@ -89,9 +89,9 @@ namespace CardboardWebVR
                 return;
             }
 
-            SaveIndex(outputFolder);
-            SaveImagesJson(outputFolder);
-            SaveWebContent(outputFolder);
+            WriteIndexFile(outputFolder);
+            WriteImagesJsonFile(outputFolder);
+            WriteWebContentFiles(outputFolder);
 
             Console.WriteLine($"Results are in {outputFolder}");
         }
@@ -137,10 +137,10 @@ namespace CardboardWebVR
         }
 
         /// <summary>
-        /// Saves the index HTML file
+        /// Writes the index HTML file to the output folder
         /// </summary>
         /// <param name="outputFolder">The output folder.</param>
-        private static void SaveIndex(string outputFolder)
+        private static void WriteIndexFile(string outputFolder)
         {
             // Build up HTML to insert into index.html
             var sb = new StringBuilder();
@@ -151,13 +151,15 @@ namespace CardboardWebVR
                 {
                     // left
                     var path = $"{AssetsFolderName}/{Path.GetFileName(photo.LeftImagePath)}";
+                    path = Uri.EscapeUriString(path);
                     var id = photo.LeftImageId.Remove(0, 1); // Remove the leading #
-                    sb.Append($"          <img id=\"{id}\" src=\"{path}\">\r\n");
+                    sb.Append($"\r\n          <img id=\"{id}\" src=\"{path}\">");
 
                     // right
                     path = $"{AssetsFolderName}/{Path.GetFileName(photo.RightImagePath)}";
+                    path = Uri.EscapeUriString(path);
                     id = photo.RightImageId.Remove(0, 1); // Remove the leading #
-                    sb.Append($"          <img id=\"{id}\" src=\"{path}\">\r\n");
+                    sb.Append($"\r\n          <img id=\"{id}\" src=\"{path}\">");
                 }
             }
 
@@ -169,7 +171,7 @@ namespace CardboardWebVR
                 using (StreamReader reader = new StreamReader(resource))
                 {
                     var text = reader.ReadToEnd();
-                    text = text.Replace("          <div id=\"asset-placeholder\"></div>", sb.ToString());
+                    text = text.Replace("<div id=\"asset-placeholder\"></div>", sb.ToString());
                     var path = Path.Combine(outputFolder, "index.html");
                     Console.WriteLine($"Saving output file {path}");
                     File.WriteAllText(path, text);
@@ -178,10 +180,10 @@ namespace CardboardWebVR
         }
 
         /// <summary>
-        /// Saves the images.json file.
+        /// Writes the images.json file to the output folder.
         /// </summary>
         /// <param name="outputFolder">The output folder.</param>
-        private static void SaveImagesJson(string outputFolder)
+        private static void WriteImagesJsonFile(string outputFolder)
         {
             var path = Path.Combine(outputFolder, "images.json");
             Console.WriteLine($"Saving output file {path}");
@@ -190,10 +192,10 @@ namespace CardboardWebVR
         }
 
         /// <summary>
-        /// Saves the static web content to the output folder
+        /// Writes the static web content to the output folder.
         /// </summary>
         /// <param name="outputFolder">The output folder.</param>
-        private static void SaveWebContent(string outputFolder)
+        private static void WriteWebContentFiles(string outputFolder)
         {
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
             foreach (var kvp in ResourceDictionary)

@@ -94,6 +94,14 @@ namespace CardboardWebVR
             WriteWebContentFiles(outputFolder);
 
             Console.WriteLine($"Results are in {outputFolder}");
+
+            if (CardboardPhotos.Count > 20)
+            {
+                Console.WriteLine();
+                Console.WriteLine("Warning: A large number of photos (> 20) may cause instability in some browsers.");
+                Console.WriteLine($"  {CardboardPhotos.Count} photos were processed.");
+                Console.WriteLine("  Consider running again with a smaller set of photos.");
+            }
         }
 
         /// <summary>

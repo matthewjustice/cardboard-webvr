@@ -51,17 +51,24 @@ namespace CardboardWebVR
                 throw new Exception("Specified image file does not contain cardboard metadata");
             }
 
-            // Try to get the caption from metadata, or failing that, use the file name
+            // Try to get the caption from metadata
             this.Caption = GetXmpData("dc:title[1]", this.SourceFilePath);
-
             if (string.IsNullOrWhiteSpace(this.Caption))
             {
                 this.Caption = GetXmpData("dc:description[1]", this.SourceFilePath);
             }
 
+            // If that failed, use the filename
             if (string.IsNullOrWhiteSpace(this.Caption))
             {
                 this.Caption = Path.GetFileNameWithoutExtension(this.SourceFilePath);
+
+                // Cardboard photos by default end with .vr.jpg, so we need an extra step
+                // to get rid of the .vr text too.
+                if (this.Caption.EndsWith(".vr"))
+                {
+                    this.Caption = this.Caption.Substring(0, this.Caption.Length - 3);
+                }
             }
         }
 

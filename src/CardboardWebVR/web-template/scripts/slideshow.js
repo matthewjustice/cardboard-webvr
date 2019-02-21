@@ -5,8 +5,25 @@
     const images = [];
     let index = 0;
 
+    function disposeTextureCache() {
+        // Workaround: clear textures from cache
+        // Without this, memory usage grows large quickly,
+        // sometimes crashing the browser after loading 7 or 8 photos.
+        // Reference: https://stackoverflow.com/questions/43940665/how-to-mange-memory-used-by-a-frame
+        // Expectation was that the PR below would have fixed this, but maybe it is a difference issue:
+        // https://github.com/aframevr/aframe/pull/2686
+        Object.keys(AFRAME.scenes[0].systems.material.textureCache).forEach(function(key) {
+            AFRAME.scenes[0].systems.material.textureCache[key].then(function(texture) {
+                texture.dispose();
+            });
+        });
+    }
+
     // Move the slide show forwards or backwards.
     function progressSlideShow(forward) {
+        // Free up memory if possible
+        disposeTextureCache();
+
         // Determine which image to show next
         if (forward) {
             // Move to the next photo
@@ -85,7 +102,6 @@
                     for (let i = 0, length = fetchedImages.length; i < length; i++) {
                         images.push(fetchedImages[i]);
                     }
-                    console.log('images: ' + JSON.stringify(images));
                 })
                 .catch(function(error) {
                     console.log('Error while getting images: ' + error.message);

@@ -54,11 +54,11 @@
         const placard = document.querySelector('#placard');
         placard.setAttribute('value', img.caption);
 
-        // Only show the welcome text on index zero
+        // Only show the welcome elements on index zero
         if (index === 0) {
-            showWelcomeSign(true);
+            showWelcomeElements(true);
         } else {
-            showWelcomeSign(false);
+            showWelcomeElements(false);
         }
     }
 
@@ -69,7 +69,7 @@
     }
 
     // Shows or hides the welcome sign and related elements
-    function showWelcomeSign(visible) {
+    function showWelcomeElements(visible) {
         const elementIds = ['welcome-sign-border', 'welcome-sign', 'welcome-text',
             'bunny-body', 'bunny-head', 'bunny-eye-right', 'bunny-eye-left',
             'bunny-ear-right', 'bunny-ear-left'];
@@ -77,6 +77,11 @@
         for (let i = 0, length = elementIds.length; i < length; i++) {
             const element = document.getElementById(elementIds[i]);
             element.object3D.visible = visible;
+        }
+
+        const carouselImages = document.querySelectorAll('.carousel-image');
+        for (let i = 0, length = carouselImages.length; i < length; i++) {
+            carouselImages[i].object3D.visible = visible;
         }
     }
 

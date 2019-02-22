@@ -152,7 +152,7 @@ namespace CardboardWebVR
             cardboardPhoto.SavePreview(Path.Combine(outputFolder, fileNameNoExtension + "_preview.jpg"));
 
             // Generate image ids
-            var imageId = $"#image{CardboardPhotos.Count + 1}";
+            var imageId = $"#image{CardboardPhotos.Count}";
             cardboardPhoto.LeftImageId = $"{imageId}-left";
             cardboardPhoto.RightImageId = $"{imageId}-right";
             cardboardPhoto.PreviewImageId = $"{imageId}-preview";
@@ -197,7 +197,7 @@ namespace CardboardWebVR
 
                     // carousel
                     var previewImage = new PreviewImage(n, imageCount, CarouselRadius, CarouselAngleReserved);
-                    stringBuilderCarousel.Append($"\r\n      <a-image class=\"carousel-image\" position=\"{previewImage.X} {CarouselHeight} {previewImage.Z}\" rotation=\"0 {previewImage.RotationY} 0\" src=\"{photo.PreviewImageId}\" width=\"{previewImage.Size}\" height=\"{previewImage.Size}\" ></a-image>");
+                    stringBuilderCarousel.Append($"\r\n      <a-image cursor-listener-carousel=\"imageIndex: {n + 1}\" class=\"carousel-image\" position=\"{previewImage.X} {CarouselHeight} {previewImage.Z}\" rotation=\"0 {previewImage.RotationY} 0\" src=\"{photo.PreviewImageId}\" width=\"{previewImage.Size}\" height=\"{previewImage.Size}\" ></a-image>");
 
                     // Next image
                     n++;

@@ -19,6 +19,30 @@
         });
     }
 
+    // Display the image associated with the current index value.
+    // Set the index value before calling this function.
+    function displayImageForCurrentIndex() {
+        const img = images[index];
+
+        // Set the left and right image values
+        const skyleftEl = document.querySelector('#sky-left');
+        skyleftEl.setAttribute('src', img.leftImageId);
+
+        const skyrightEl = document.querySelector('#sky-right');
+        skyrightEl.setAttribute('src', img.rightImageId);
+
+        // Update the placard text
+        const placard = document.querySelector('#placard');
+        placard.setAttribute('value', img.caption);
+
+        // Only show the welcome elements on index zero
+        if (index === 0) {
+            showWelcomeElements(true);
+        } else {
+            showWelcomeElements(false);
+        }
+    }
+
     // Move the slide show forwards or backwards.
     function progressSlideShow(forward) {
         // Free up memory if possible
@@ -42,24 +66,7 @@
         }
 
         // Display the image
-        const img = images[index];
-
-        const skyleftEl = document.querySelector('#sky-left');
-        skyleftEl.setAttribute('src', img.leftImageId);
-
-        const skyrightEl = document.querySelector('#sky-right');
-        skyrightEl.setAttribute('src', img.rightImageId);
-
-        // Update the placard text
-        const placard = document.querySelector('#placard');
-        placard.setAttribute('value', img.caption);
-
-        // Only show the welcome elements on index zero
-        if (index === 0) {
-            showWelcomeElements(true);
-        } else {
-            showWelcomeElements(false);
-        }
+        displayImageForCurrentIndex();
     }
 
     // Shows or hides the cursor
@@ -164,7 +171,7 @@
             });
 
             // When the cursor leaves the left nav arrow, hide the cursor and
-            // do not illuminuate the arrow.
+            // do not illuminate the arrow.
             document.getElementById('navleft').addEventListener('mouseleave', function(event) {
                 showCursor(false);
                 illuminateArrow(event.currentTarget, false);
@@ -178,15 +185,27 @@
             });
 
             // When the cursor leaves the right nav arrow, hide the cursor and
-            // do not illuminuate the arrow.
+            // do not illuminate the arrow.
             document.getElementById('navright').addEventListener('mouseleave', function() {
                 showCursor(false);
                 illuminateArrow(event.currentTarget, false);
             });
+
+            // Show / hide the cursor for all carousel elements
+            const carouselImages = document.querySelectorAll('.carousel-image');
+            for (let i = 0, length = carouselImages.length; i < length; i++) {
+                carouselImages[i].addEventListener('mouseenter', function() {
+                    showCursor(true);
+                });
+
+                carouselImages[i].addEventListener('mouseleave', function() {
+                    showCursor(false);
+                });
+            }
         }
     });
 
-    // By including this compoennt on the left nav arrow
+    // By including this component on the left nav arrow
     // a cursor click (gaze / fuse) will cause the slideshow
     // to go backwards.
     AFRAME.registerComponent('cursor-listener-left', {
@@ -197,13 +216,29 @@
         }
     });
 
-    // By including this compoennt on the right nav arrow
+    // By including this component on the right nav arrow
     // a cursor click (gaze / fuse) will cause the slideshow
     // to go forwards.
     AFRAME.registerComponent('cursor-listener-right', {
         init: function() {
             this.el.addEventListener('click', function(evt) {
                 progressSlideShow(true);
+            });
+        }
+    });
+
+    // By including this component on a carousel image
+    // a cursor click (gaze / fuse) will cause the slideshow
+    // to navigate to the specified index.
+    AFRAME.registerComponent('cursor-listener-carousel', {
+        schema: {
+            imageIndex: {type: 'number'}
+        },
+        init: function() {
+            const data = this.data;
+            this.el.addEventListener('click', function() {
+                index = data.imageIndex;
+                displayImageForCurrentIndex();
             });
         }
     });

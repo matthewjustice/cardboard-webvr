@@ -157,7 +157,10 @@
             const cursorVisibleElements = document.querySelectorAll('.cursor-visible');
             for (let i = 0, length = cursorVisibleElements.length; i < length; i++) {
                 cursorVisibleElements[i].addEventListener('mouseenter', function() {
-                    showCursor(true);
+                    // Only show the cursor if the element is visible
+                    if (this.object3D.visible) {
+                        showCursor(true);
+                    }
                 });
 
                 cursorVisibleElements[i].addEventListener('mouseleave', function() {
@@ -214,8 +217,12 @@
         init: function() {
             const data = this.data;
             this.el.addEventListener('click', function() {
-                index = data.imageIndex;
-                displayImageForCurrentIndex();
+                // Only handle the click if the element is visible
+                if (this.object3D.visible) {
+                    index = data.imageIndex;
+                    displayImageForCurrentIndex();
+                    showCursor(false);
+                }
             });
         }
     });

@@ -26,6 +26,11 @@ namespace CardboardWebVR
         private const string ScriptsFolderName = "scripts";
 
         /// <summary>
+        /// The size (width and height) of the preview images in pixels
+        /// </summary>
+        private const int PreviewImageSize = 1024;
+
+        /// <summary>
         /// The image carousel radius in meters.
         /// </summary>
         private const double CarouselRadius = 3.0;
@@ -36,7 +41,7 @@ namespace CardboardWebVR
         private const double CarouselAngleReserved = 90.0;
 
         /// <summary>
-        /// The height in meters of the image carousel
+        /// The height off the ground, in meters, of the center of the image carousel
         /// </summary>
         private const double CarouselHeight = 1.6;
 
@@ -46,9 +51,17 @@ namespace CardboardWebVR
         private const double CarouselNavigationOrbRadius = 0.1;
 
         /// <summary>
-        /// The size (width and height) of the preview images in pixels
+        /// The fractional space that a carousel image is allowed to use.
+        /// Each image has a portion of the carousel circumference it could use.
+        /// This number is the percentage (expressed as a fraction) of that
+        /// space that should be filled.
         /// </summary>
-        private const int PreviewImageSize = 1024;
+        private const double CarouselImageSpaceFraction = 0.85;
+
+        /// <summary>
+        /// The maximum size (width and height) a carousel image can be in meters
+        /// </summary>
+        private const double CarouselMaxImageSizeInMeters = 1.0;
 
         /// <summary>
         /// The resource dictionary includes a list of static resources
@@ -206,7 +219,7 @@ namespace CardboardWebVR
                     stingBuilderAssets.Append($"\r\n          <img id=\"{id}\" src=\"{path}\">");
 
                     // carousel
-                    var previewImage = new PreviewImage(n, imageCount, CarouselRadius, CarouselAngleReserved);
+                    var previewImage = new PreviewImage(n, imageCount, CarouselRadius, CarouselAngleReserved, CarouselImageSpaceFraction, CarouselMaxImageSizeInMeters);
                     var navigationOrbY = CarouselHeight - (previewImage.Size / 2) - CarouselNavigationOrbRadius;
                     stringBuilderCarousel.Append($"\r\n      <a-image class=\"carousel-image\" position=\"{previewImage.X} {CarouselHeight} {previewImage.Z}\" rotation=\"0 {previewImage.RotationY} 0\" src=\"{photo.PreviewImageId}\" width=\"{previewImage.Size}\" height=\"{previewImage.Size}\" ></a-image>");
                     stringBuilderCarousel.Append($"\r\n      <a-sphere cursor-listener-carousel=\"imageIndex: {n + 1}\" class=\"carousel-orb cursor-highlight\" radius=\"{CarouselNavigationOrbRadius}\" position=\"{previewImage.X} {navigationOrbY} {previewImage.Z}\" color=\"silver\"></a-sphere>");

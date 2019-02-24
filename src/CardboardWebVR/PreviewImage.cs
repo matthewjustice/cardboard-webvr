@@ -12,16 +12,6 @@ namespace CardboardWebVR
     public class PreviewImage
     {
         /// <summary>
-        /// The maximum image size
-        /// </summary>
-        private const double MaxImageSize = 1.0;
-
-        /// <summary>
-        /// The image percentage of the space it could fill
-        /// </summary>
-        private const double ImagePercentage = 0.85;
-
-        /// <summary>
         /// The nth preview image
         /// </summary>
         private readonly int n;
@@ -47,18 +37,35 @@ namespace CardboardWebVR
         private readonly double angleImage;
 
         /// <summary>
+        /// The fractional space that an image is allowed to use.
+        /// Each image has a portion of the circumference it could use.
+        /// This number is the percentage (expressed as a fraction) of that
+        /// space that should be filled.
+        /// </summary>
+        private readonly double spaceFraction;
+
+        /// <summary>
+        /// The maximum size (width and height) an image can be in meters
+        /// </summary>
+        private readonly double maxSize = 1.0;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="PreviewImage"/> class.
         /// </summary>
         /// <param name="n">The nth image</param>
         /// <param name="imageCount">The image count.</param>
         /// <param name="radius">The radius.</param>
         /// <param name="angleReserved">The angle reserved, in degrees</param>
-        public PreviewImage(int n, int imageCount, double radius, double angleReserved)
+        /// <param name="spaceFraction">The fractional space a preview image may occupy</param>
+        /// <param name="maxSize">The maximum allowed size, in meters, of a preview image.</param>
+        public PreviewImage(int n, int imageCount, double radius, double angleReserved, double spaceFraction, double maxSize)
         {
             this.n = n;
             this.imageCount = imageCount;
             this.radius = radius;
             this.angleReserved = angleReserved;
+            this.spaceFraction = spaceFraction;
+            this.maxSize = maxSize;
 
             var angleAvailableForUse = 360 - this.angleReserved;
             var angleBetweenImages = angleAvailableForUse / (imageCount - 1);
@@ -146,10 +153,10 @@ namespace CardboardWebVR
                 var usableSize = circumference * usablePercent;
 
                 // The size of the image will be a portion of the overall usable size
-                var size = usableSize / this.imageCount * ImagePercentage;
-                if (size > MaxImageSize)
+                var size = usableSize / this.imageCount * this.spaceFraction;
+                if (size > this.maxSize)
                 {
-                    size = MaxImageSize;
+                    size = this.maxSize;
                 }
 
                 return size;

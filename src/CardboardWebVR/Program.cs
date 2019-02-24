@@ -33,7 +33,7 @@ namespace CardboardWebVR
         /// <summary>
         /// The image carousel radius in meters.
         /// </summary>
-        private const double CarouselRadius = 3.0;
+        private const double CarouselRadius = 2.0;
 
         /// <summary>
         /// The angle in degrees of reserved area on the front of the image carousel

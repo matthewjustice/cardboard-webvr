@@ -46,6 +46,11 @@ namespace CardboardWebVR
         private const double CarouselNavigationOrbRadius = 0.1;
 
         /// <summary>
+        /// The size (width and height) of the preview images in pixels
+        /// </summary>
+        private const int PreviewImageSize = 1024;
+
+        /// <summary>
         /// The resource dictionary includes a list of static resources
         /// that will need to be written to disk. The key is the resource
         /// name and the value is the relative path where it should be written.
@@ -154,7 +159,7 @@ namespace CardboardWebVR
             // Save the left, right, and preview photos
             cardboardPhoto.SaveLeftPhoto(Path.Combine(outputFolder, fileNameNoExtension + "_left.jpg"), true);
             cardboardPhoto.SaveRightPhoto(Path.Combine(outputFolder, fileNameNoExtension + "_right.jpg"), true);
-            cardboardPhoto.SavePreview(Path.Combine(outputFolder, fileNameNoExtension + "_preview.jpg"));
+            cardboardPhoto.SavePreview(Path.Combine(outputFolder, fileNameNoExtension + "_preview.jpg"), PreviewImageSize);
 
             // Generate image ids
             var imageId = $"#image{CardboardPhotos.Count}";

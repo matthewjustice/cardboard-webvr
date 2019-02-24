@@ -198,14 +198,16 @@ namespace CardboardWebVR
         /// Saves a preview image.
         /// </summary>
         /// <param name="outputFilePath">The output file path.</param>
-        public void SavePreview(string outputFilePath)
+        /// <param name="targetSize">The desired width and height</param>
+        public void SavePreview(string outputFilePath, int targetSize)
         {
             var bitmap = (Bitmap)Image.FromFile(this.SourceFilePath);
             var size = bitmap.Height;
             var x = (bitmap.Width / 2) - (size / 2);
             var cropRectange = new Rectangle(x, 0, size, size);
             var previewBitmap = bitmap.Clone(cropRectange, bitmap.PixelFormat);
-            SaveAsJpeg(previewBitmap, JpegCompression, outputFilePath);
+            var resizedBitmap = new Bitmap(previewBitmap, new Size(targetSize, targetSize));
+            SaveAsJpeg(resizedBitmap, JpegCompression, outputFilePath);
             this.PreviewImagePath = outputFilePath;
         }
 

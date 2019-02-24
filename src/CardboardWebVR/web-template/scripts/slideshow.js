@@ -90,6 +90,19 @@
         for (let i = 0, length = carouselImages.length; i < length; i++) {
             carouselImages[i].object3D.visible = visible;
         }
+
+        const carouselOrbs = document.querySelectorAll('.carousel-orb');
+        for (let i = 0, length = carouselOrbs.length; i < length; i++) {
+            carouselOrbs[i].object3D.visible = visible;
+        }
+
+        // This plane is already effectively invisible (opacity: 0.0; transparent: true)
+        // but we still need to set this property so that the cursor-visible mouseenter
+        // event won't cause the cursor to be shown
+        const carouselCursorPlanes = document.querySelectorAll('.carousel-cursor-plane');
+        for (let i = 0, length = carouselCursorPlanes.length; i < length; i++) {
+            carouselCursorPlanes[i].object3D.visible = visible;
+        }
     }
 
     // Alters the look of the navigation arrow
@@ -172,8 +185,11 @@
             const cursorHighlightElements = document.querySelectorAll('.cursor-highlight');
             for (let i = 0, length = cursorHighlightElements.length; i < length; i++) {
                 cursorHighlightElements[i].addEventListener('mouseenter', function() {
-                    showCursor(true);
-                    illuminateArrow(event.currentTarget, true);
+                    // Only show the cursor if the element is visible
+                    if (this.object3D.visible) {
+                        showCursor(true);
+                        illuminateArrow(event.currentTarget, true);
+                    }
                 });
 
                 cursorHighlightElements[i].addEventListener('mouseleave', function() {

@@ -41,6 +41,11 @@ namespace CardboardWebVR
         private const double CarouselHeight = 1.6;
 
         /// <summary>
+        /// The radius in meters of a carousel navigation orb
+        /// </summary>
+        private const double CarouselNavigationOrbRadius = 0.1;
+
+        /// <summary>
         /// The resource dictionary includes a list of static resources
         /// that will need to be written to disk. The key is the resource
         /// name and the value is the relative path where it should be written.
@@ -197,7 +202,10 @@ namespace CardboardWebVR
 
                     // carousel
                     var previewImage = new PreviewImage(n, imageCount, CarouselRadius, CarouselAngleReserved);
-                    stringBuilderCarousel.Append($"\r\n      <a-image cursor-listener-carousel=\"imageIndex: {n + 1}\" class=\"carousel-image cursor-visible\" position=\"{previewImage.X} {CarouselHeight} {previewImage.Z}\" rotation=\"0 {previewImage.RotationY} 0\" src=\"{photo.PreviewImageId}\" width=\"{previewImage.Size}\" height=\"{previewImage.Size}\" ></a-image>");
+                    var navigationOrbY = CarouselHeight - (previewImage.Size / 2) - CarouselNavigationOrbRadius;
+                    stringBuilderCarousel.Append($"\r\n      <a-image class=\"carousel-image\" position=\"{previewImage.X} {CarouselHeight} {previewImage.Z}\" rotation=\"0 {previewImage.RotationY} 0\" src=\"{photo.PreviewImageId}\" width=\"{previewImage.Size}\" height=\"{previewImage.Size}\" ></a-image>");
+                    stringBuilderCarousel.Append($"\r\n      <a-sphere cursor-listener-carousel=\"imageIndex: {n + 1}\" class=\"carousel-orb cursor-highlight\" radius=\"{CarouselNavigationOrbRadius}\" position=\"{previewImage.X} {navigationOrbY} {previewImage.Z}\" color=\"silver\"></a-sphere>");
+                    stringBuilderCarousel.Append($"\r\n      <a-plane class=\"carousel-cursor-plane cursor-visible\" position=\"{previewImage.X} {navigationOrbY} {previewImage.Z}\" rotation=\"0 {previewImage.RotationY} 0\" width=\"{previewImage.Size}\" height=\"{CarouselNavigationOrbRadius * 2}\" material=\"opacity: 0.0; transparent: true\"></a-plane>");
 
                     // Next image
                     n++;

@@ -19,6 +19,30 @@
         });
     }
 
+    // Display the image associated with the current index value.
+    // Set the index value before calling this function.
+    function displayImageForCurrentIndex() {
+        const img = images[index];
+
+        // Set the left and right image values
+        const skyleftEl = document.querySelector('#sky-left');
+        skyleftEl.setAttribute('src', img.leftImageId);
+
+        const skyrightEl = document.querySelector('#sky-right');
+        skyrightEl.setAttribute('src', img.rightImageId);
+
+        // Update the placard text
+        const placard = document.querySelector('#placard');
+        placard.setAttribute('value', img.caption);
+
+        // Only show the welcome elements on index zero
+        if (index === 0) {
+            showWelcomeElements(true);
+        } else {
+            showWelcomeElements(false);
+        }
+    }
+
     // Move the slide show forwards or backwards.
     function progressSlideShow(forward) {
         // Free up memory if possible
@@ -42,24 +66,7 @@
         }
 
         // Display the image
-        const img = images[index];
-
-        const skyleftEl = document.querySelector('#sky-left');
-        skyleftEl.setAttribute('src', img.leftImageId);
-
-        const skyrightEl = document.querySelector('#sky-right');
-        skyrightEl.setAttribute('src', img.rightImageId);
-
-        // Update the placard text
-        const placard = document.querySelector('#placard');
-        placard.setAttribute('value', img.caption);
-
-        // Only show the welcome text on index zero
-        if (index === 0) {
-            showWelcomeSign(true);
-        } else {
-            showWelcomeSign(false);
-        }
+        displayImageForCurrentIndex();
     }
 
     // Shows or hides the cursor
@@ -69,7 +76,7 @@
     }
 
     // Shows or hides the welcome sign and related elements
-    function showWelcomeSign(visible) {
+    function showWelcomeElements(visible) {
         const elementIds = ['welcome-sign-border', 'welcome-sign', 'welcome-text',
             'bunny-body', 'bunny-head', 'bunny-eye-right', 'bunny-eye-left',
             'bunny-ear-right', 'bunny-ear-left'];
@@ -77,6 +84,24 @@
         for (let i = 0, length = elementIds.length; i < length; i++) {
             const element = document.getElementById(elementIds[i]);
             element.object3D.visible = visible;
+        }
+
+        const carouselImages = document.querySelectorAll('.carousel-image');
+        for (let i = 0, length = carouselImages.length; i < length; i++) {
+            carouselImages[i].object3D.visible = visible;
+        }
+
+        const carouselOrbs = document.querySelectorAll('.carousel-orb');
+        for (let i = 0, length = carouselOrbs.length; i < length; i++) {
+            carouselOrbs[i].object3D.visible = visible;
+        }
+
+        // This plane is already effectively invisible (opacity: 0.0; transparent: true)
+        // but we still need to set this property so that the cursor-visible mouseenter
+        // event won't cause the cursor to be shown
+        const carouselCursorPlanes = document.querySelectorAll('.carousel-cursor-plane');
+        for (let i = 0, length = carouselCursorPlanes.length; i < length; i++) {
+            carouselCursorPlanes[i].object3D.visible = visible;
         }
     }
 
@@ -138,67 +163,82 @@
                 }
             });
 
-            // Initiall do not show the cursor
+            // Initially do not show the cursor
             showCursor(false);
 
-            // When the cursor moves over the navmenu, show the cursor
-            document.getElementById('navmenu').addEventListener('mouseenter', function() {
-                showCursor(true);
-            });
+            // Show / hide the cursor for items of class cursor-visible
+            const cursorVisibleElements = document.querySelectorAll('.cursor-visible');
+            for (let i = 0, length = cursorVisibleElements.length; i < length; i++) {
+                cursorVisibleElements[i].addEventListener('mouseenter', function() {
+                    // Only show the cursor if the element is visible
+                    if (this.object3D.visible) {
+                        showCursor(true);
+                    }
+                });
 
-            // When the cursor leaves  the navmenu, hide the cursor
-            document.getElementById('navmenu').addEventListener('mouseleave', function() {
-                showCursor(false);
-            });
+                cursorVisibleElements[i].addEventListener('mouseleave', function() {
+                    showCursor(false);
+                });
+            }
 
-            // When the cursor moves over the left nav arrow, show the cursor and
-            // illuminate the arrow.
-            document.getElementById('navleft').addEventListener('mouseenter', function(event) {
-                showCursor(true);
-                illuminateArrow(event.currentTarget, true);
-            });
+            // Show / hide and illuminate the cursor for items of class cursor-highlight
+            const cursorHighlightElements = document.querySelectorAll('.cursor-highlight');
+            for (let i = 0, length = cursorHighlightElements.length; i < length; i++) {
+                cursorHighlightElements[i].addEventListener('mouseenter', function() {
+                    // Only show the cursor if the element is visible
+                    if (this.object3D.visible) {
+                        showCursor(true);
+                        illuminateArrow(event.currentTarget, true);
+                    }
+                });
 
-            // When the cursor leaves the left nav arrow, hide the cursor and
-            // do not illuminuate the arrow.
-            document.getElementById('navleft').addEventListener('mouseleave', function(event) {
-                showCursor(false);
-                illuminateArrow(event.currentTarget, false);
-            });
+                cursorHighlightElements[i].addEventListener('mouseleave', function() {
+                    showCursor(false);
+                    illuminateArrow(event.currentTarget, false);
+                });
+            }
+        }
+    });
 
-            // When the cursor moves over the right nav arrow, show the cursor and
-            // illuminate the arrow.
-            document.getElementById('navright').addEventListener('mouseenter', function() {
-                showCursor(true);
-                illuminateArrow(event.currentTarget, true);
-            });
-
-            // When the cursor leaves the right nav arrow, hide the cursor and
-            // do not illuminuate the arrow.
-            document.getElementById('navright').addEventListener('mouseleave', function() {
-                showCursor(false);
-                illuminateArrow(event.currentTarget, false);
+    // By including this component on a nav component
+    // a cursor click (gaze / fuse) will cause the slideshow
+    // to go forwards, backwards, or home
+    AFRAME.registerComponent('cursor-listener-nav', {
+        init: function() {
+            const id = this.el.id;
+            this.el.addEventListener('click', function() {
+                switch (id) {
+                case 'navleft':
+                    progressSlideShow(false);
+                    break;
+                case 'navright':
+                    progressSlideShow(true);
+                    break;
+                case 'navhome':
+                    index = 0;
+                    displayImageForCurrentIndex();
+                    break;
+                }
             });
         }
     });
 
-    // By including this compoennt on the left nav arrow
+    // By including this component on a carousel image
     // a cursor click (gaze / fuse) will cause the slideshow
-    // to go backwards.
-    AFRAME.registerComponent('cursor-listener-left', {
+    // to navigate to the specified index.
+    AFRAME.registerComponent('cursor-listener-carousel', {
+        schema: {
+            imageIndex: {type: 'number'}
+        },
         init: function() {
-            this.el.addEventListener('click', function(evt) {
-                progressSlideShow(false);
-            });
-        }
-    });
-
-    // By including this compoennt on the right nav arrow
-    // a cursor click (gaze / fuse) will cause the slideshow
-    // to go forwards.
-    AFRAME.registerComponent('cursor-listener-right', {
-        init: function() {
-            this.el.addEventListener('click', function(evt) {
-                progressSlideShow(true);
+            const data = this.data;
+            this.el.addEventListener('click', function() {
+                // Only handle the click if the element is visible
+                if (this.object3D.visible) {
+                    index = data.imageIndex;
+                    displayImageForCurrentIndex();
+                    showCursor(false);
+                }
             });
         }
     });

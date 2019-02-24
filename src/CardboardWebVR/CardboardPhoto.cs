@@ -100,6 +100,15 @@ namespace CardboardWebVR
         public string RightImagePath { get; set; }
 
         /// <summary>
+        /// Gets or sets the preview image path.
+        /// </summary>
+        /// <value>
+        /// The preview image path.
+        /// </value>
+        [JsonIgnore]
+        public string PreviewImagePath { get; set; }
+
+        /// <summary>
         /// Gets or sets the left image identifier.
         /// </summary>
         /// <value>
@@ -116,6 +125,15 @@ namespace CardboardWebVR
         /// </value>
         [JsonProperty("rightImageId")]
         public string RightImageId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the preview image identifier.
+        /// </summary>
+        /// <value>
+        /// The preview image identifier.
+        /// </value>
+        [JsonIgnore]
+        public string PreviewImageId { get; set; }
 
         /// <summary>
         /// Gets or sets the caption.
@@ -180,14 +198,17 @@ namespace CardboardWebVR
         /// Saves a preview image.
         /// </summary>
         /// <param name="outputFilePath">The output file path.</param>
-        public void SavePreview(string outputFilePath)
+        /// <param name="targetSize">The desired width and height</param>
+        public void SavePreview(string outputFilePath, int targetSize)
         {
             var bitmap = (Bitmap)Image.FromFile(this.SourceFilePath);
             var size = bitmap.Height;
             var x = (bitmap.Width / 2) - (size / 2);
             var cropRectange = new Rectangle(x, 0, size, size);
             var previewBitmap = bitmap.Clone(cropRectange, bitmap.PixelFormat);
-            SaveAsJpeg(previewBitmap, JpegCompression, outputFilePath);
+            var resizedBitmap = new Bitmap(previewBitmap, new Size(targetSize, targetSize));
+            SaveAsJpeg(resizedBitmap, JpegCompression, outputFilePath);
+            this.PreviewImagePath = outputFilePath;
         }
 
         /// <summary>

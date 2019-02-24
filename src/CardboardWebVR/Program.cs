@@ -26,6 +26,44 @@ namespace CardboardWebVR
         private const string ScriptsFolderName = "scripts";
 
         /// <summary>
+        /// The size (width and height) of the preview images in pixels
+        /// </summary>
+        private const int PreviewImageSize = 1024;
+
+        /// <summary>
+        /// The image carousel radius in meters.
+        /// </summary>
+        private const double CarouselRadius = 2.0;
+
+        /// <summary>
+        /// The angle in degrees of reserved area on the front of the image carousel
+        /// </summary>
+        private const double CarouselAngleReserved = 90.0;
+
+        /// <summary>
+        /// The height off the ground, in meters, of the center of the image carousel
+        /// </summary>
+        private const double CarouselHeight = 1.6;
+
+        /// <summary>
+        /// The radius in meters of a carousel navigation orb
+        /// </summary>
+        private const double CarouselNavigationOrbRadius = 0.1;
+
+        /// <summary>
+        /// The fractional space that a carousel image is allowed to use.
+        /// Each image has a portion of the carousel circumference it could use.
+        /// This number is the percentage (expressed as a fraction) of that
+        /// space that should be filled.
+        /// </summary>
+        private const double CarouselImageSpaceFraction = 0.85;
+
+        /// <summary>
+        /// The maximum size (width and height) a carousel image can be in meters
+        /// </summary>
+        private const double CarouselMaxImageSizeInMeters = 1.0;
+
+        /// <summary>
         /// The resource dictionary includes a list of static resources
         /// that will need to be written to disk. The key is the resource
         /// name and the value is the relative path where it should be written.
@@ -131,14 +169,16 @@ namespace CardboardWebVR
             var cardboardPhoto = new CardboardPhoto(filePath);
             var fileNameNoExtension = Path.GetFileNameWithoutExtension(filePath);
 
-            // Save the left and right photos
+            // Save the left, right, and preview photos
             cardboardPhoto.SaveLeftPhoto(Path.Combine(outputFolder, fileNameNoExtension + "_left.jpg"), true);
             cardboardPhoto.SaveRightPhoto(Path.Combine(outputFolder, fileNameNoExtension + "_right.jpg"), true);
+            cardboardPhoto.SavePreview(Path.Combine(outputFolder, fileNameNoExtension + "_preview.jpg"), PreviewImageSize);
 
             // Generate image ids
-            var imageId = $"#image{CardboardPhotos.Count + 1}";
+            var imageId = $"#image{CardboardPhotos.Count}";
             cardboardPhoto.LeftImageId = $"{imageId}-left";
             cardboardPhoto.RightImageId = $"{imageId}-right";
+            cardboardPhoto.PreviewImageId = $"{imageId}-preview";
 
             // Add to our list of photos for later processing
             CardboardPhotos.Add(cardboardPhoto);
@@ -151,7 +191,10 @@ namespace CardboardWebVR
         private static void WriteIndexFile(string outputFolder)
         {
             // Build up HTML to insert into index.html
-            var sb = new StringBuilder();
+            var stingBuilderAssets = new StringBuilder();
+            var stringBuilderCarousel = new StringBuilder();
+            var n = 0;
+            var imageCount = CardboardPhotos.Count - 1; // One less due to start.png
             foreach (var photo in CardboardPhotos)
             {
                 if (!string.IsNullOrWhiteSpace(photo.LeftImagePath) &&
@@ -161,13 +204,29 @@ namespace CardboardWebVR
                     var path = $"{AssetsFolderName}/{Path.GetFileName(photo.LeftImagePath)}";
                     path = Uri.EscapeUriString(path);
                     var id = photo.LeftImageId.Remove(0, 1); // Remove the leading #
-                    sb.Append($"\r\n          <img id=\"{id}\" src=\"{path}\">");
+                    stingBuilderAssets.Append($"\r\n          <img id=\"{id}\" src=\"{path}\">");
 
                     // right
                     path = $"{AssetsFolderName}/{Path.GetFileName(photo.RightImagePath)}";
                     path = Uri.EscapeUriString(path);
                     id = photo.RightImageId.Remove(0, 1); // Remove the leading #
-                    sb.Append($"\r\n          <img id=\"{id}\" src=\"{path}\">");
+                    stingBuilderAssets.Append($"\r\n          <img id=\"{id}\" src=\"{path}\">");
+
+                    // preview
+                    path = $"{AssetsFolderName}/{Path.GetFileName(photo.PreviewImagePath)}";
+                    path = Uri.EscapeUriString(path);
+                    id = photo.PreviewImageId.Remove(0, 1); // Remove the leading #
+                    stingBuilderAssets.Append($"\r\n          <img id=\"{id}\" src=\"{path}\">");
+
+                    // carousel
+                    var previewImage = new PreviewImage(n, imageCount, CarouselRadius, CarouselAngleReserved, CarouselImageSpaceFraction, CarouselMaxImageSizeInMeters);
+                    var navigationOrbY = CarouselHeight - (previewImage.Size / 2) - CarouselNavigationOrbRadius;
+                    stringBuilderCarousel.Append($"\r\n      <a-image class=\"carousel-image\" position=\"{previewImage.X} {CarouselHeight} {previewImage.Z}\" rotation=\"0 {previewImage.RotationY} 0\" src=\"{photo.PreviewImageId}\" width=\"{previewImage.Size}\" height=\"{previewImage.Size}\" ></a-image>");
+                    stringBuilderCarousel.Append($"\r\n      <a-sphere cursor-listener-carousel=\"imageIndex: {n + 1}\" class=\"carousel-orb cursor-highlight\" radius=\"{CarouselNavigationOrbRadius}\" position=\"{previewImage.X} {navigationOrbY} {previewImage.Z}\" color=\"silver\"></a-sphere>");
+                    stringBuilderCarousel.Append($"\r\n      <a-plane class=\"carousel-cursor-plane cursor-visible\" position=\"{previewImage.X} {navigationOrbY} {previewImage.Z}\" rotation=\"0 {previewImage.RotationY} 0\" width=\"{previewImage.Size}\" height=\"{CarouselNavigationOrbRadius * 2}\" material=\"opacity: 0.0; transparent: true\"></a-plane>");
+
+                    // Next image
+                    n++;
                 }
             }
 
@@ -179,7 +238,8 @@ namespace CardboardWebVR
                 using (StreamReader reader = new StreamReader(resource))
                 {
                     var text = reader.ReadToEnd();
-                    text = text.Replace("<div id=\"asset-placeholder\"></div>", sb.ToString());
+                    text = text.Replace("<div id=\"asset-placeholder\"></div>", stingBuilderAssets.ToString());
+                    text = text.Replace("<div id=\"carousel-placeholder\"></div>", stringBuilderCarousel.ToString());
                     var path = Path.Combine(outputFolder, "index.html");
                     Console.WriteLine($"Saving output file {path}");
                     File.WriteAllText(path, text);

@@ -143,47 +143,19 @@
 
             // Initially do not show the cursor
             showCursor(false);
-
-            // Show / hide the cursor for items of class cursor-visible
-            const cursorVisibleElements = document.querySelectorAll('.cursor-visible');
-            for (let i = 0, length = cursorVisibleElements.length; i < length; i++) {
-                cursorVisibleElements[i].addEventListener('mouseenter', function() {
-                    // Only show the cursor if the element is visible
-                    if (this.object3D.visible) {
-                        showCursor(true);
-                    }
-                });
-
-                cursorVisibleElements[i].addEventListener('mouseleave', function() {
-                    showCursor(false);
-                });
-            }
-
-            // Show / hide and illuminate the cursor for items of class cursor-highlight
-            const cursorHighlightElements = document.querySelectorAll('.cursor-highlight');
-            for (let i = 0, length = cursorHighlightElements.length; i < length; i++) {
-                cursorHighlightElements[i].addEventListener('mouseenter', function() {
-                    // Only show the cursor if the element is visible
-                    if (this.object3D.visible) {
-                        showCursor(true);
-                        illuminateElement(event.currentTarget, true);
-                    }
-                });
-
-                cursorHighlightElements[i].addEventListener('mouseleave', function() {
-                    showCursor(false);
-                    illuminateElement(event.currentTarget, false);
-                });
-            }
         }
     });
 
     // By including this component on a nav component
     // a cursor click (gaze / fuse) will cause the slideshow
-    // to go forwards, backwards, or home
+    // to go forwards, backwards, or home, or to a certain image
     AFRAME.registerComponent('cursor-listener-nav', {
+        schema: {
+            imageIndex: {type: 'number'}
+        },
         init: function() {
             const id = this.el.id;
+            const data = this.data;
             this.el.addEventListener('click', function() {
                 switch (id) {
                 case 'navleft':
@@ -196,27 +168,43 @@
                     index = 0;
                     displayImageForCurrentIndex();
                     break;
+                default:
+                    index = data.imageIndex;
+                    displayImageForCurrentIndex();
+                    showCursor(false);
+                    break;
                 }
+            });
+
+            this.el.addEventListener('mouseenter', function() {
+                // Only show the cursor if the element is visible
+                if (this.object3D.visible) {
+                    showCursor(true);
+                    illuminateElement(event.currentTarget, true);
+                }
+            });
+
+            this.el.addEventListener('mouseleave', function() {
+                showCursor(false);
+                illuminateElement(event.currentTarget, false);
             });
         }
     });
 
-    // By including this component on a carousel image
-    // a cursor click (gaze / fuse) will cause the slideshow
-    // to navigate to the specified index.
-    AFRAME.registerComponent('cursor-listener-carousel', {
-        schema: {
-            imageIndex: {type: 'number'}
-        },
+    // By including this component on an element
+    // the cursor will be shown, but there is no
+    // click handler. Intended for cursor display only.
+    AFRAME.registerComponent('cursor-visible', {
         init: function() {
-            const data = this.data;
-            this.el.addEventListener('click', function() {
-                // Only handle the click if the element is visible
+            this.el.addEventListener('mouseenter', function() {
+                // Only show the cursor if the element is visible
                 if (this.object3D.visible) {
-                    index = data.imageIndex;
-                    displayImageForCurrentIndex();
-                    showCursor(false);
+                    showCursor(true);
                 }
+            });
+
+            this.el.addEventListener('mouseleave', function() {
+                showCursor(false);
             });
         }
     });

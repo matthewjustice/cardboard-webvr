@@ -176,10 +176,14 @@
                 }
             });
 
-            this.el.addEventListener('mouseenter', function() {
-                // Only show the cursor if the element is visible
+            this.el.addEventListener('mouseenter', function(event) {
+                // Only show the cursor if the element is visible and the
+                // intersecting cursor is the gaze-based cursor.
+                const cursorId = event.detail.cursorEl.id;
                 if (this.object3D.visible) {
-                    showCursor(true);
+                    if (cursorId == 'cursor') {
+                        showCursor(true);
+                    }
                     illuminateElement(event.currentTarget, true);
                 }
             });
@@ -196,9 +200,11 @@
     // click handler. Intended for cursor display only.
     AFRAME.registerComponent('cursor-visible', {
         init: function() {
-            this.el.addEventListener('mouseenter', function() {
-                // Only show the cursor if the element is visible
-                if (this.object3D.visible) {
+            this.el.addEventListener('mouseenter', function(event) {
+                // Only show the cursor if the element is visible and the
+                // intersecting cursor is the gaze-based cursor.
+                const cursorId = event.detail.cursorEl.id;
+                if (this.object3D.visible && cursorId == 'cursor') {
                     showCursor(true);
                 }
             });

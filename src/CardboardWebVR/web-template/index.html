@@ -12,6 +12,7 @@
           <img id="start" src="assets/start.png"><div id="asset-placeholder"></div>
       </a-assets>
 
+      <!-- Camera and cursor -->
       <a-entity id="camera" camera look-controls position="0 1.6 0" stereocam="eye:left;">
           <a-cursor id="cursor" fuse="true" fuseTimout="200"
             material="color: white; shader: flat"
@@ -21,6 +22,10 @@
             animation__mouseleave="property: scale; startEvents: mouseleave; easing: easeInCubic; dur: 500; to: 1 1 1">
           </a-cursor>
       </a-entity>
+
+      <!-- Laser controls for VR controllers -->
+      <a-entity id="leftLaser" laser-controls="hand: left" raycaster="objects: .cursor-active"></a-entity>
+      <a-entity id="rightLaser" laser-controls="hand: right" raycaster="objects: .cursor-active"></a-entity>
 
       <!-- Duel sky elements for displaying the left / right 360 images -->
       <a-sky id="sky-left" src="#start" stereo="eye:left"></a-sky>

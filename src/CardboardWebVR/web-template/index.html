@@ -37,17 +37,17 @@
       <a-circle id="navhome" class="cursor-highlight" cursor-listener-nav color="silver" position="0.0 0.3 -1.59" radius="0.09" side="double"></a-circle>
 
       <!-- Welcome Sign-->
-      <a-plane id="welcome-sign-border" position="0.0 1.6 -2.01" width="2.1" height="1.4" color="silver"></a-plane>
-      <a-plane id="welcome-sign" position="0.0 1.6 -2.0" width="2" height="1.3" color="black"></a-plane>
-      <a-text id="welcome-text" position="-0.95 1.6 -2.0" value="Welcome to the 360 image slideshow!\n\nChange photos by:\n- pressing left / right arrow keys\nor\n- gazing at the nav arrows below\nor\n- a long touch on the screen\n\nBest viewed with a VR headet." lineHeight="2" color="white" width="2.5" ></a-text>
+      <a-plane id="welcome-sign-border" class="welcome" position="0.0 1.6 -2.01" width="2.1" height="1.4" color="silver"></a-plane>
+      <a-plane id="welcome-sign" class="welcome" position="0.0 1.6 -2.0" width="2" height="1.3" color="black"></a-plane>
+      <a-text id="welcome-text" class="welcome" position="-0.95 1.6 -2.0" value="Welcome to the 360 image slideshow!\n\nChange photos by:\n- pressing left / right arrow keys\nor\n- gazing at the nav arrows below\nor\n- a long touch on the screen\n\nBest viewed with a VR headet." lineHeight="2" color="white" width="2.5" ></a-text>
 
       <!-- A Bunny -->
-      <a-sphere id="bunny-body" radius="0.2" position="-2.0 0.0 -2.0" color="white"></a-sphere>
-      <a-sphere id="bunny-head" radius="0.14" position="-2.0 0.05 -1.8" color="white"></a-sphere>
-      <a-sphere id="bunny-eye-right" radius="0.03" position="-2.04 0.1 -1.69" color="black"></a-sphere>
-      <a-sphere id="bunny-eye-left" radius="0.03" position="-1.96 0.1 -1.69" color="black"></a-sphere>
-      <a-cylinder id="bunny-ear-right" position="-2.04 0.3 -1.78" radius="0.033" rotation="10 0 0" height="0.25"></a-cylinder>
-      <a-cylinder id="bunny-ear-left" position="-1.96 0.3 -1.78" radius="0.033" rotation="-10 0 0" height="0.25"></a-cylinder>
+      <a-sphere id="bunny-body" class="welcome" radius="0.2" position="-2.0 0.0 -2.0" color="white"></a-sphere>
+      <a-sphere id="bunny-head" class="welcome" radius="0.14" position="-2.0 0.05 -1.8" color="white"></a-sphere>
+      <a-sphere id="bunny-eye-right" class="welcome" radius="0.03" position="-2.04 0.1 -1.69" color="black"></a-sphere>
+      <a-sphere id="bunny-eye-left" class="welcome" radius="0.03" position="-1.96 0.1 -1.69" color="black"></a-sphere>
+      <a-cylinder id="bunny-ear-right" class="welcome" position="-2.04 0.3 -1.78" radius="0.033" rotation="10 0 0" height="0.25"></a-cylinder>
+      <a-cylinder id="bunny-ear-left" class="welcome" position="-1.96 0.3 -1.78" radius="0.033" rotation="-10 0 0" height="0.25"></a-cylinder>
 
       <!-- Image carousel --><div id="carousel-placeholder"></div>
     </a-scene>

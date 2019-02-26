@@ -77,31 +77,9 @@
 
     // Shows or hides the welcome sign and related elements
     function showWelcomeElements(visible) {
-        const elementIds = ['welcome-sign-border', 'welcome-sign', 'welcome-text',
-            'bunny-body', 'bunny-head', 'bunny-eye-right', 'bunny-eye-left',
-            'bunny-ear-right', 'bunny-ear-left'];
-
-        for (let i = 0, length = elementIds.length; i < length; i++) {
-            const element = document.getElementById(elementIds[i]);
-            element.object3D.visible = visible;
-        }
-
-        const carouselImages = document.querySelectorAll('.carousel-image');
-        for (let i = 0, length = carouselImages.length; i < length; i++) {
-            carouselImages[i].object3D.visible = visible;
-        }
-
-        const carouselOrbs = document.querySelectorAll('.carousel-orb');
-        for (let i = 0, length = carouselOrbs.length; i < length; i++) {
-            carouselOrbs[i].object3D.visible = visible;
-        }
-
-        // This plane is already effectively invisible (opacity: 0.0; transparent: true)
-        // but we still need to set this property so that the cursor-visible mouseenter
-        // event won't cause the cursor to be shown
-        const carouselCursorPlanes = document.querySelectorAll('.carousel-cursor-plane');
-        for (let i = 0, length = carouselCursorPlanes.length; i < length; i++) {
-            carouselCursorPlanes[i].object3D.visible = visible;
+        const welcomeElements = document.querySelectorAll('.welcome');
+        for (let i = 0, length = welcomeElements.length; i < length; i++) {
+            welcomeElements[i].object3D.visible = visible;
         }
     }
 

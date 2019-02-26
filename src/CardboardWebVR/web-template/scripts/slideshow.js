@@ -217,4 +217,31 @@
             });
         }
     });
+
+    // Use this component on a motion controller
+    AFRAME.registerComponent('controller-events', {
+        init: function() {
+            let lastTrackpadX = 0;
+            this.el.addEventListener('trackpadup', function(event) {
+                if (lastTrackpadX > 0.5) {
+                    // Trackpad was last pressed right
+                    progressSlideShow(true);
+                } else if (lastTrackpadX < -0.5) {
+                    // Trackpad was last pressed left
+                    progressSlideShow(false);
+                } else if (lastTrackpadX > -0.2 && lastTrackpadX < 0.2) {
+                    // Trackpad was last pressed in the x center
+                    index = 0;
+                    displayImageForCurrentIndex();
+                }
+            });
+            this.el.addEventListener('trackpadmoved', function(event) {
+                // Record the x position on the trackpad. We get
+                // many of these events as the user touches
+                // the trackpad, so we don't take any action now, just
+                // record the value.
+                lastTrackpadX = event.detail.x;
+            });
+        }
+    });
 }());

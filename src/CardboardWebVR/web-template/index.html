@@ -23,9 +23,11 @@
           </a-cursor>
       </a-entity>
 
-      <!-- Laser controls for VR controllers -->
+      <!-- Laser controls and motion controls for VR controllers -->
       <a-entity id="leftLaser" laser-controls="hand: left" raycaster="objects: .cursor-active"></a-entity>
       <a-entity id="rightLaser" laser-controls="hand: right" raycaster="objects: .cursor-active"></a-entity>
+      <a-entity controller-events windows-motion-controls="hand: left"></a-entity>
+      <a-entity controller-events windows-motion-controls="hand: right"></a-entity>
 
       <!-- Duel sky elements for displaying the left / right 360 images -->
       <a-sky id="sky-left" src="#start" stereo="eye:left"></a-sky>

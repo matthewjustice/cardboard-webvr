@@ -222,8 +222,8 @@ namespace CardboardWebVR
                     var previewImage = new PreviewImage(n, imageCount, CarouselRadius, CarouselAngleReserved, CarouselImageSpaceFraction, CarouselMaxImageSizeInMeters);
                     var navigationOrbY = CarouselHeight - (previewImage.Size / 2) - CarouselNavigationOrbRadius;
                     stringBuilderCarousel.Append($"\r\n      <a-image class=\"welcome\" position=\"{previewImage.X} {CarouselHeight} {previewImage.Z}\" rotation=\"0 {previewImage.RotationY} 0\" src=\"{photo.PreviewImageId}\" width=\"{previewImage.Size}\" height=\"{previewImage.Size}\" ></a-image>");
-                    stringBuilderCarousel.Append($"\r\n      <a-sphere cursor-listener-nav=\"imageIndex: {n + 1}\" class=\"welcome\" radius=\"{CarouselNavigationOrbRadius}\" position=\"{previewImage.X} {navigationOrbY} {previewImage.Z}\" color=\"silver\"></a-sphere>");
-                    stringBuilderCarousel.Append($"\r\n      <a-plane cursor-visible class=\"welcome\" position=\"{previewImage.X} {navigationOrbY} {previewImage.Z}\" rotation=\"0 {previewImage.RotationY} 0\" width=\"{previewImage.Size}\" height=\"{CarouselNavigationOrbRadius * 2}\" material=\"opacity: 0.0; transparent: true\"></a-plane>");
+                    stringBuilderCarousel.Append($"\r\n      <a-sphere cursor-listener-nav=\"imageIndex: {n + 1}\" class=\"welcome cursor-active\" radius=\"{CarouselNavigationOrbRadius}\" position=\"{previewImage.X} {navigationOrbY} {previewImage.Z}\" color=\"silver\"></a-sphere>");
+                    stringBuilderCarousel.Append($"\r\n      <a-plane cursor-visible class=\"welcome cursor-active\" position=\"{previewImage.X} {navigationOrbY} {previewImage.Z}\" rotation=\"0 {previewImage.RotationY} 0\" width=\"{previewImage.Size}\" height=\"{CarouselNavigationOrbRadius * 2}\" material=\"opacity: 0.0; transparent: true\"></a-plane>");
 
                     // Next image
                     n++;

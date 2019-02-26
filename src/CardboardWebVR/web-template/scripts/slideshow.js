@@ -169,9 +169,12 @@
                     displayImageForCurrentIndex();
                     break;
                 default:
-                    index = data.imageIndex;
-                    displayImageForCurrentIndex();
-                    showCursor(false);
+                    // Used by nav orbs, which are sometimes invisible
+                    if (this.object3D.visible) {
+                        index = data.imageIndex;
+                        displayImageForCurrentIndex();
+                        showCursor(false);
+                    }
                     break;
                 }
             });

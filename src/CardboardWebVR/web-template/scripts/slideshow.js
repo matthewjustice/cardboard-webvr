@@ -84,7 +84,7 @@
     }
 
     // Alters the look of the navigation arrow
-    function illuminateArrow(element, illuminate) {
+    function illuminateElement(element, illuminate) {
         if (illuminate) {
             element.setAttribute('color', 'green');
         } else {
@@ -166,13 +166,13 @@
                     // Only show the cursor if the element is visible
                     if (this.object3D.visible) {
                         showCursor(true);
-                        illuminateArrow(event.currentTarget, true);
+                        illuminateElement(event.currentTarget, true);
                     }
                 });
 
                 cursorHighlightElements[i].addEventListener('mouseleave', function() {
                     showCursor(false);
-                    illuminateArrow(event.currentTarget, false);
+                    illuminateElement(event.currentTarget, false);
                 });
             }
         }

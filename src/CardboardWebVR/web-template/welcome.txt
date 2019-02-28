@@ -1,0 +1,10 @@
+Welcome to the 360 image slideshow!
+
+Change photos by:
+- pressing left / right arrow keys
+or
+- gazing at the nav arrows below
+or
+- a long touch on the screen
+
+Best viewed with a VR headet.

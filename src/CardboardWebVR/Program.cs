@@ -240,6 +240,21 @@ namespace CardboardWebVR
                     var text = reader.ReadToEnd();
                     text = text.Replace("<div id=\"asset-placeholder\"></div>", stingBuilderAssets.ToString());
                     text = text.Replace("<div id=\"carousel-placeholder\"></div>", stringBuilderCarousel.ToString());
+
+                    // Read the welcome text and replace that too
+                    using(var welcomeResource = assembly.GetManifestResourceStream("CardboardWebVR.web_template.welcome.txt"))
+                    {
+                        using (StreamReader welcomeReader = new StreamReader(welcomeResource))
+                        {
+                            var welcomeText = welcomeReader.ReadToEnd();
+                            // Replace literal carriage return / line feeds with 
+                            // An escape sequence. This needs to be all one line.
+                            welcomeText = welcomeText.Replace("\r\n", "\\n");
+                            welcomeText = welcomeText.Replace("\n", "\\n");
+                            text = text.Replace("WELCOME-PLACEHOLDER", welcomeText);
+                        }
+                    }
+
                     var path = Path.Combine(outputFolder, "index.html");
                     Console.WriteLine($"Saving output file {path}");
                     File.WriteAllText(path, text);

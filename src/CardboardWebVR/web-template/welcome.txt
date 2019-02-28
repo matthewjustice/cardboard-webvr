@@ -1,10 +1,17 @@
-Welcome to the 360 image slideshow!
+Welcome to the VR Photo Viewer
 
-Change photos by:
-- pressing left / right arrow keys
-or
-- gazing at the nav arrows below
-or
-- a long touch on the screen
+Scroll through photos:
+- Keyboard: left/right arrow keys
+- Mobile: Long touch on screen
+- VR Headset: gaze at arrows below
+- VR Controls: touchpad left/right
 
-Best viewed with a VR headet.
+Select a photo on this screen:
+- VR Headset: gaze at floating orb
+- VR Controls: point and select orb
+
+Navigate back to this screen:
+- VR Headset: gaze at circle below
+- VR Controls: point and select circle
+
+Best viewed with a VR headset.

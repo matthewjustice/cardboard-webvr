@@ -71,7 +71,7 @@ namespace CardboardWebVR
         private static readonly Dictionary<string, string> ResourceDictionary = new Dictionary<string, string>
         {
             { "CardboardWebVR.web_template.scripts.aframe-stereo-component.min.js", $"{ScriptsFolderName}/aframe-stereo-component.min.js" },
-            { "CardboardWebVR.web_template.scripts.slideshow.js", $"{ScriptsFolderName}/slideshow.js" },
+            { "CardboardWebVR.web_template.scripts.cardboard-webvr.js", $"{ScriptsFolderName}/cardboard-webvr.js" },
             { "CardboardWebVR.web_template.assets.start.png", $"{AssetsFolderName}/start.png" },
         };
 

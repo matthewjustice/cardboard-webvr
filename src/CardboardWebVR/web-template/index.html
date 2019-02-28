@@ -38,14 +38,14 @@
       <a-text id="placard" position="-1.45 0.0 -1.5" rotation="-45 0 0" width="3" value="Welcome" color="tan"></a-text>
 
       <!-- navmenu -->
-      <a-plane id="navarea" class="cursor-active" cursor-visible position="0.0 0.3 -1.6" rotation="0 0 0" width="2.0" height="1.0" material="opacity: 0.0; transparent: true"></a-plane>
-      <a-plane id="navmenu" class="cursor-active" cursor-visible position="0.0 0.3 -1.6" rotation="0 0 0" width="1" height=".2" color="gray"></a-plane>
+      <a-plane id="navarea" class="cursor-active" cursor-visible position="0.0 0.3 -1.63" rotation="0 0 0" width="2.0" height="0.5" material="opacity: 0.0; transparent: true"></a-plane>
+      <a-box id="navmenu" class="cursor-active" cursor-visible position="0.0 0.3 -1.63" rotation="0 0 0" width="1.1" height="0.3" depth="0.06" color="gray" side="double"></a-box>
       <a-triangle id="navleft" class="cursor-active" cursor-listener-nav color="silver" vertex-a="-0.5 0.3 -1.59" vertex-b="-0.3 0.4 -1.59" vertex-c="-0.3 0.2 -1.59" side="double"></a-triangle>
       <a-triangle id="navright" class="cursor-active" cursor-listener-nav color="silver" vertex-a="0.5 0.3 -1.59" vertex-b="0.3 0.4 -1.59" vertex-c="0.3 0.2 -1.59" side="double"></a-triangle>
       <a-circle id="navhome" class="cursor-active" cursor-listener-nav color="silver" position="0.0 0.3 -1.59" radius="0.09" side="double"></a-circle>
 
       <!-- Welcome Sign-->
-      <a-plane id="welcome-sign-border" class="welcome" position="0.0 1.6 -2.01" width="2.1" height="2.3" color="silver"></a-plane>
+      <a-plane id="welcome-sign-border" class="welcome" position="0.0 1.6 -2.01" width="2.1" height="2.3" color="silver" side="double"></a-plane>
       <a-plane id="welcome-sign" class="welcome" position="0.0 1.6 -2.0" width="2" height="2.2" color="black"></a-plane>
       <a-text id="welcome-text" class="welcome" position="-0.95 1.6 -2.0" value="WELCOME-PLACEHOLDER" lineHeight="2" color="white" width="2.5" ></a-text>
 

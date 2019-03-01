@@ -124,7 +124,7 @@
         init: function() {
             console.log('sceneinit');
 
-            fetch('/images.json')
+            fetch('images.json')
                 .then(function(response) {
                     return response.json();
                 })

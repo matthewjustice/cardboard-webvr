@@ -2,15 +2,17 @@ Welcome to the VR Photo Viewer
 
 Scroll through photos:
 - Keyboard: left/right arrow keys
-- Mobile: Long touch on screen
+- Mouse: click arrows below
 - VR Headset: gaze at arrows below
 - VR Controls: touchpad left/right
 
 Select a photo on this screen:
+- Mouse: click arrows below
 - VR Headset: gaze at floating orb
 - VR Controls: point and select orb
 
 Navigate back to this screen:
+- Mouse: click circle below
 - VR Headset: gaze at circle below
 - VR Controls: point and select circle
 

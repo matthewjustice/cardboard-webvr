@@ -110,24 +110,6 @@
                     console.log('Error while getting images: ' + error.message);
                 });
 
-            // Use a long touch as another way to go through the slide show.
-            // We need this for mobile scenarios without headsets.
-            let timer;
-            document.addEventListener('touchstart', function() {
-                // When a touch begins, start a time for 1 second.
-                // If it isn't canceled before that time, then go to the next image.
-                timer = setTimeout(function() {
-                    progressSlideShow(true);
-                }, 1000);
-            }, false);
-
-            document.addEventListener('touchend', function() {
-                // If the touch event ends, clear the timer.
-                if (timer) {
-                    clearTimeout(timer);
-                }
-            }, false);
-
             document.addEventListener('keydown', function onKeyDown(event) {
                 switch (event.key) {
                 case 'ArrowLeft':
@@ -139,6 +121,18 @@
                     progressSlideShow(true);
                     break;
                 }
+            });
+
+            // Remove mouse cursor when entering VR
+            // This is needed to avoid irregular gaze cursor behavior.
+            this.el.sceneEl.addEventListener('enter-vr', function() {
+                this.removeAttribute('cursor');
+            });
+
+            // Add mouse cursor when exiting VR
+            this.el.sceneEl.addEventListener('exit-vr', function() {
+                this.setAttribute('cursor', 'rayOrigin', 'mouse');
+                console.log('exit vr');
             });
 
             // Initially do not show the cursor
@@ -156,7 +150,24 @@
         init: function() {
             const id = this.el.id;
             const data = this.data;
+            let ignoreClicks = false;
+
             this.el.addEventListener('click', function() {
+                if (ignoreClicks) {
+                    // Igore this click
+                    return;
+                }
+
+                // On mobile, prevent another click in the short term.
+                // This is a workaround for the following issue:
+                // https://github.com/aframevr/aframe/issues/3297
+                if (AFRAME.utils.device.isMobile()) {
+                    ignoreClicks = true;
+                    setTimeout(function() {
+                        ignoreClicks = false;
+                    }, 2000);
+                }
+
                 switch (id) {
                 case 'navleft':
                     progressSlideShow(false);

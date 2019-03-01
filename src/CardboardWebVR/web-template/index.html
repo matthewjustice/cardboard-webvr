@@ -7,7 +7,7 @@
     <script src="scripts/cardboard-webvr.js"></script>
   </head>
   <body>
-    <a-scene sceneInit>
+    <a-scene sceneInit cursor="rayOrigin: mouse" raycaster="objects: .cursor-active">
       <a-assets>
           <img id="start" src="assets/start.png"><div id="asset-placeholder"></div>
       </a-assets>
@@ -45,8 +45,8 @@
       <a-circle id="navhome" class="cursor-active" cursor-listener-nav color="silver" position="0.0 0.3 -1.59" radius="0.09" side="double"></a-circle>
 
       <!-- Welcome Sign-->
-      <a-plane id="welcome-sign-border" class="welcome" position="0.0 1.6 -2.51" width="2.1" height="2.3" color="silver" side="double"></a-plane>
-      <a-plane id="welcome-sign" class="welcome" position="0.0 1.6 -2.5" width="2" height="2.2" color="black"></a-plane>
+      <a-plane id="welcome-sign-border" class="welcome" position="0.0 1.6 -2.51" width="2.1" height="2.4" color="silver" side="double"></a-plane>
+      <a-plane id="welcome-sign" class="welcome" position="0.0 1.6 -2.5" width="2" height="2.3" color="black"></a-plane>
       <a-text id="welcome-text" class="welcome" position="-0.95 1.6 -2.5" value="WELCOME-PLACEHOLDER" lineHeight="2" color="white" width="2.5" ></a-text>
 
       <!-- A Bunny -->

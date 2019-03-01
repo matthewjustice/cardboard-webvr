@@ -191,7 +191,8 @@ namespace CardboardWebVR
         private static void WriteIndexFile(string outputFolder)
         {
             // Build up HTML to insert into index.html
-            var stingBuilderAssets = new StringBuilder();
+            var stringBuilderAssets = new StringBuilder();
+            var stringBuilderPreview = new StringBuilder();
             var stringBuilderCarousel = new StringBuilder();
             var n = 0;
             var imageCount = CardboardPhotos.Count - 1; // One less due to start.png
@@ -204,19 +205,19 @@ namespace CardboardWebVR
                     var path = $"{AssetsFolderName}/{Path.GetFileName(photo.LeftImagePath)}";
                     path = Uri.EscapeUriString(path);
                     var id = photo.LeftImageId.Remove(0, 1); // Remove the leading #
-                    stingBuilderAssets.Append($"\r\n          <img id=\"{id}\" src=\"{path}\">");
+                    stringBuilderAssets.Append($"\r\n          <img id=\"{id}\" src=\"{path}\">");
 
                     // right
                     path = $"{AssetsFolderName}/{Path.GetFileName(photo.RightImagePath)}";
                     path = Uri.EscapeUriString(path);
                     id = photo.RightImageId.Remove(0, 1); // Remove the leading #
-                    stingBuilderAssets.Append($"\r\n          <img id=\"{id}\" src=\"{path}\">");
+                    stringBuilderAssets.Append($"\r\n          <img id=\"{id}\" src=\"{path}\">");
 
                     // preview
                     path = $"{AssetsFolderName}/{Path.GetFileName(photo.PreviewImagePath)}";
                     path = Uri.EscapeUriString(path);
                     id = photo.PreviewImageId.Remove(0, 1); // Remove the leading #
-                    stingBuilderAssets.Append($"\r\n          <img id=\"{id}\" src=\"{path}\">");
+                    stringBuilderPreview.Append($"\r\n          <img id=\"{id}\" src=\"{path}\">");
 
                     // carousel
                     var previewImage = new PreviewImage(n, imageCount, CarouselRadius, CarouselAngleReserved, CarouselImageSpaceFraction, CarouselMaxImageSizeInMeters);
@@ -230,6 +231,9 @@ namespace CardboardWebVR
                 }
             }
 
+            // Place the preview assets above the other assets to encourage them to load first
+            var allAssets = stringBuilderPreview.ToString() + stringBuilderAssets.ToString();
+
             // Read in the template index.html file, and replace the placeholder DIV
             // with the html we generated above
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
@@ -238,7 +242,7 @@ namespace CardboardWebVR
                 using (StreamReader reader = new StreamReader(resource))
                 {
                     var text = reader.ReadToEnd();
-                    text = text.Replace("<div id=\"asset-placeholder\"></div>", stingBuilderAssets.ToString());
+                    text = text.Replace("<div id=\"asset-placeholder\"></div>", allAssets);
                     text = text.Replace("<div id=\"carousel-placeholder\"></div>", stringBuilderCarousel.ToString());
 
                     // Read the welcome text and replace that too

@@ -32,7 +32,7 @@
         skyrightEl.setAttribute('src', img.rightImageId);
 
         // Update the placard text
-        const placard = document.querySelector('#placard');
+        const placard = document.querySelector('#placard-text');
         placard.setAttribute('value', img.caption);
 
         // Only show the welcome elements on index zero
@@ -92,6 +92,33 @@
         }
     }
 
+    // Adjust the y value of all elements identified with selector
+    function adjustHeightForElements(selector, heightDifference) {
+        const elements = document.querySelectorAll(selector);
+        for (let i = 0, length = elements.length; i < length; i++) {
+            const position = elements[i].getAttribute('position');
+            position.y += heightDifference;
+            elements[i].setAttribute('position', position);
+        }
+    }
+
+    // Move the user interface elments up or down on mobile based on
+    // whether we are in VR or not. This is needed bacause on Chrome
+    // mobile, when not in VR, the UI element are very low, some are
+    // completely offscreeen (such as the placard), and vertical
+    // panning isn't an option on non-VR mobile. Assumption is
+    // that this function is first called with inVR=false to adjust
+    // downward, and then we adjust upward later if we enter VR.
+    function adjustInterfaceHeight(inVR) {
+        if (AFRAME.utils.device.isMobile()) {
+            if (!inVR) {
+                adjustHeightForElements('.user-interface', 0.5);
+            } else {
+                adjustHeightForElements('.user-interface', -0.5);
+            }
+        }
+    }
+
     // This code runs when the scene is initialized
     AFRAME.registerComponent('sceneinit', {
         init: function() {
@@ -123,20 +150,24 @@
                 }
             });
 
-            // Remove mouse cursor when entering VR
+            // Remove mouse cursor and adjust UI when entering VR
             // This is needed to avoid irregular gaze cursor behavior.
             this.el.sceneEl.addEventListener('enter-vr', function() {
                 this.removeAttribute('cursor');
+                adjustInterfaceHeight(true);
             });
 
-            // Add mouse cursor when exiting VR
+            // Add mouse cursor and adjust UI when exiting VR
             this.el.sceneEl.addEventListener('exit-vr', function() {
                 this.setAttribute('cursor', 'rayOrigin', 'mouse');
-                console.log('exit vr');
+                adjustInterfaceHeight(false);
             });
 
             // Initially do not show the cursor
             showCursor(false);
+
+            // Adjust interface, assume not in VR mode initially
+            adjustInterfaceHeight(false);
         }
     });
 

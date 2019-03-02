@@ -7,6 +7,7 @@ namespace CardboardWebVR
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Text;
     using Newtonsoft.Json;
 
@@ -154,7 +155,17 @@ namespace CardboardWebVR
 
             foreach (var file in files)
             {
-                ProcessFile(file, outputFolder);
+                if(string.Compare(Path.GetFileName(file), "title.txt", StringComparison.OrdinalIgnoreCase) == 0)
+                {
+                    // If a title.txt file is present, the first line in the file
+                    // should be displayed on the placard on the welcome screen.
+                    var title = File.ReadLines(file).First();
+                    CardboardPhotos[0].Caption = title;
+                }
+                else
+                {
+                    ProcessFile(file, outputFolder);
+                }
             }
         }
 
@@ -258,6 +269,9 @@ namespace CardboardWebVR
                             text = text.Replace("WELCOME-PLACEHOLDER", welcomeText);
                         }
                     }
+
+                    // Replace the placard placeholder
+                    text = text.Replace("PLACARD-PLACEHOLDER", CardboardPhotos[0].Caption);
 
                     var path = Path.Combine(outputFolder, "index.html");
                     Console.WriteLine($"Saving output file {path}");

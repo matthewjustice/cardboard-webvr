@@ -18,6 +18,7 @@ $ sudo apt-get install libgdiplus
 - Copy your Cardboard photos to an empty folder.
 - The folder should contain no other files.
 - Optional: Give the photos meaningful file names or add a metadata title to the photos. This text will appear in the generated VR app.
+- Optional: Add a file named title.txt to the folder. The first line of this file will appear on the VR welcome screen.
 - Recommendation: Use no more than 20 photos. A large of photos can lead to excessive memory usage in the browser.
 
 ### Run the project

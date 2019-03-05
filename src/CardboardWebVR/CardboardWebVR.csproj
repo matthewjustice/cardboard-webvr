@@ -20,6 +20,7 @@
 
   <ItemGroup>
       <EmbeddedResource Include="web-template/index.html" />
+      <EmbeddedResource Include="web-template/single-photo.html" />
       <EmbeddedResource Include="web-template/scripts/aframe-stereo-component.min.js" />
       <EmbeddedResource Include="web-template/scripts/cardboard-webvr.js" />
       <EmbeddedResource Include="web-template/assets/start.png" />

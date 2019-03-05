@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cardboard WebVR Viewer</title>
+    <script src="//aframe.io/releases/0.9.0/aframe.min.js"></script>
+    <script src="scripts/aframe-stereo-component.min.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <a-assets><div id="asset-placeholder"></div>
+      </a-assets>
+
+      <!-- Camera and cursor -->
+      <a-entity id="camera" camera look-controls position="0 1.6 0" stereocam="eye:left;">
+      </a-entity>
+
+      <!-- Duel sky elements for displaying the left / right 360 images -->
+      <a-sky id="sky-left" src="#image0-left" stereo="eye:left"></a-sky>
+      <a-sky id="sky-right" src="#image0-right" stereo="eye:right"></a-sky>
+
+      <!-- Placard and text-->
+      <a-box id="placard-box" class="user-interface" position="0.0 0.0 -1.5" rotation="-45 0 0" width="2" height=".3" depth="0.02" color="#585858"></a-box>
+      <a-text id="placard-text" class="user-interface" position="-1.0 0.0 -1.48" rotation="-45 0 0" width="2" value="PLACARD-PLACEHOLDER" color="white"></a-text>
+    </a-scene>
+  </body>
+</html>

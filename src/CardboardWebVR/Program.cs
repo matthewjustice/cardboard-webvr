@@ -87,6 +87,8 @@ namespace CardboardWebVR
         /// <param name="args">The arguments.</param>
         public static void Main(string[] args)
         {
+            var multiFileMode = true;
+
             if (args.Length < 2)
             {
                 PrintHelp();
@@ -97,30 +99,14 @@ namespace CardboardWebVR
             var inputFolder = args[0];
             var outputFolder = args[1];
 
-            // Create the output directory structure
-            Directory.CreateDirectory(outputFolder);
-            Directory.CreateDirectory(Path.Combine(outputFolder, ScriptsFolderName));
-            var assetsFolder = Path.Combine(outputFolder, AssetsFolderName);
-            Directory.CreateDirectory(assetsFolder);
-
-            // Add the initial entry in the our cardboard photo list,
-            // This is required later when the list is serialized to JSON
-            var startPhoto = new CardboardPhoto
-            {
-                LeftImageId = "#start",
-                RightImageId = "#start",
-                Caption = "Welcome"
-            };
-            CardboardPhotos.Add(startPhoto);
-
-            // Try to process the input as a directory or file.
+            // Check input
             if (Directory.Exists(inputFolder))
             {
-                ProcessDirectory(inputFolder, assetsFolder);
+                multiFileMode = true;
             }
             else if (File.Exists(inputFolder))
             {
-                ProcessFile(inputFolder, assetsFolder);
+                multiFileMode = false;
             }
             else
             {
@@ -128,9 +114,39 @@ namespace CardboardWebVR
                 return;
             }
 
-            WriteIndexFile(outputFolder);
-            WriteImagesJsonFile(outputFolder);
-            WriteWebContentFiles(outputFolder);
+            // Create the output directory structure
+            Directory.CreateDirectory(outputFolder);
+            Directory.CreateDirectory(Path.Combine(outputFolder, ScriptsFolderName));
+            var assetsFolder = Path.Combine(outputFolder, AssetsFolderName);
+            Directory.CreateDirectory(assetsFolder);
+
+            // Process the input as a folder or file.
+            if (multiFileMode)
+            {
+                // Add the initial entry in the our cardboard photo list,
+                // This is required later when the list is serialized to JSON
+                var startPhoto = new CardboardPhoto
+                {
+                    LeftImageId = "#start",
+                    RightImageId = "#start",
+                    Caption = "Welcome"
+                };
+                CardboardPhotos.Add(startPhoto);
+
+                ProcessDirectory(inputFolder, assetsFolder);
+            }
+            else 
+            {
+                ProcessFile(inputFolder, assetsFolder, false);
+            }
+
+            // Write the various output files
+            WriteIndexFile(outputFolder, multiFileMode);   
+            WriteWebContentFiles(outputFolder, multiFileMode);
+            if (multiFileMode)
+            {
+                WriteImagesJsonFile(outputFolder);
+            }
 
             Console.WriteLine($"Results are in {outputFolder}");
 
@@ -164,7 +180,7 @@ namespace CardboardWebVR
                 }
                 else
                 {
-                    ProcessFile(file, outputFolder);
+                    ProcessFile(file, outputFolder, true);
                 }
             }
         }
@@ -174,7 +190,8 @@ namespace CardboardWebVR
         /// </summary>
         /// <param name="filePath">The file path.</param>
         /// <param name="outputFolder">The output folder path.</param>
-        private static void ProcessFile(string filePath, string outputFolder)
+        /// <param name="multiFileMode">True if we are processing multiple photo files.</param>
+        private static void ProcessFile(string filePath, string outputFolder, bool multiFileMode)
         {
             Console.WriteLine($"Processing file {filePath}.");
             var cardboardPhoto = new CardboardPhoto(filePath);
@@ -183,8 +200,11 @@ namespace CardboardWebVR
             // Save the left, right, and preview photos
             cardboardPhoto.SaveLeftPhoto(Path.Combine(outputFolder, fileNameNoExtension + "_left.jpg"), true);
             cardboardPhoto.SaveRightPhoto(Path.Combine(outputFolder, fileNameNoExtension + "_right.jpg"), true);
-            cardboardPhoto.SavePreview(Path.Combine(outputFolder, fileNameNoExtension + "_preview.jpg"), PreviewImageSize);
-
+            if (multiFileMode)
+            {
+                cardboardPhoto.SavePreview(Path.Combine(outputFolder, fileNameNoExtension + "_preview.jpg"), PreviewImageSize);
+            }
+            
             // Generate image ids
             var imageId = $"#image{CardboardPhotos.Count}";
             cardboardPhoto.LeftImageId = $"{imageId}-left";
@@ -199,14 +219,17 @@ namespace CardboardWebVR
         /// Writes the index HTML file to the output folder
         /// </summary>
         /// <param name="outputFolder">The output folder.</param>
-        private static void WriteIndexFile(string outputFolder)
+        /// <param name="multiFileMode">True if we are processing multiple photo files.</param>
+        private static void WriteIndexFile(string outputFolder, bool multiFileMode)
         {
             // Build up HTML to insert into index.html
             var stringBuilderAssets = new StringBuilder();
             var stringBuilderPreview = new StringBuilder();
             var stringBuilderCarousel = new StringBuilder();
-            var n = 0;
+            var n = 0;        
             var imageCount = CardboardPhotos.Count - 1; // One less due to start.png
+            string allAssets;
+
             foreach (var photo in CardboardPhotos)
             {
                 if (!string.IsNullOrWhiteSpace(photo.LeftImagePath) &&
@@ -242,13 +265,28 @@ namespace CardboardWebVR
                 }
             }
 
-            // Place the preview assets above the other assets to encourage them to load first
-            var allAssets = stringBuilderPreview.ToString() + stringBuilderAssets.ToString();
-
             // Read in the template index.html file, and replace the placeholder DIV
             // with the html we generated above
+            string resourceName;
+            if (multiFileMode)
+            {
+                // Use the multi-image html file as a template
+                resourceName = "CardboardWebVR.web_template.index.html";
+
+                // Place the preview assets above the other assets to encourage them to load first
+                allAssets = stringBuilderPreview.ToString() + stringBuilderAssets.ToString();
+            }
+            else
+            {
+                // Use the single-image html file as a template
+                resourceName = "CardboardWebVR.web_template.single-photo.html";
+
+                // We don't need preview images in the single-image case
+                allAssets = stringBuilderAssets.ToString();
+            }
+
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
-            using (var resource = assembly.GetManifestResourceStream("CardboardWebVR.web_template.index.html"))
+            using (var resource = assembly.GetManifestResourceStream(resourceName))
             {
                 using (StreamReader reader = new StreamReader(resource))
                 {
@@ -296,18 +334,24 @@ namespace CardboardWebVR
         /// Writes the static web content to the output folder.
         /// </summary>
         /// <param name="outputFolder">The output folder.</param>
-        private static void WriteWebContentFiles(string outputFolder)
+        /// <param name="multiFileMode">True if we are processing multiple photo files.</param>
+        private static void WriteWebContentFiles(string outputFolder, bool multiFileMode)
         {
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
             foreach (var kvp in ResourceDictionary)
             {
-                var path = Path.Combine(outputFolder, kvp.Value);
-                Console.WriteLine($"Saving output file {path}");
-                using (var resource = assembly.GetManifestResourceStream(kvp.Key))
+                // In multi-file mode, write every file.
+                // If not multi-file, we only need aframe-stereo-component
+                if(multiFileMode || kvp.Key == "CardboardWebVR.web_template.scripts.aframe-stereo-component.min.js")
                 {
-                    using (var file = new FileStream(path, FileMode.Create, FileAccess.Write))
+                    var path = Path.Combine(outputFolder, kvp.Value);
+                    Console.WriteLine($"Saving output file {path}");
+                    using (var resource = assembly.GetManifestResourceStream(kvp.Key))
                     {
-                        resource.CopyTo(file);
+                        using (var file = new FileStream(path, FileMode.Create, FileAccess.Write))
+                        {
+                            resource.CopyTo(file);
+                        }
                     }
                 }
             }
@@ -322,7 +366,7 @@ namespace CardboardWebVR
             Console.WriteLine("usage:");
             Console.WriteLine("CardboardWebVR [input-folder] [output-folder]");
             Console.WriteLine("  [input-folder] must contain one or more Cardboard Camera photo files.");
-            Console.WriteLine("                 The filenames will be dispayed in the generated site.");
+            Console.WriteLine("                 The filenames will be displayed in the generated site.");
             Console.WriteLine("  [output-folder] is the location where the output site will be written.");
         }
     }
